@@ -1,6 +1,6 @@
 loadPackage "NumericalAlgebraicGeometry";
 
-R = RR[ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6];
+R = QQ[tx, ty, tz, ax, ay, az][ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6];
 
 -- Function to generate random DH parameters
 generateRandomDhParameters = dof -> (
@@ -63,31 +63,54 @@ constructEquations = (A, alpha, r, d) -> (
     return myEquations;
 );
 
-main = () -> (
-    -- Define DH parameters randomly
-    dof := 6;
-    dhParams := generateRandomDhParameters(dof);
+constructParametriseSE = () -> (
+    -- SE(3) along X
+    transX = matrix{{1, 0, 0, ax}, 
+                    {0, (1-tx^2)/(1+tx^2), (-2*tx)/(1+tx^2), 0}, 
+                    {0, (2*tx)/(1+tx^2), (1-tx^2)/(1+tx^2), 0}, 
+                    {0, 0, 0, 1}};
+    
+    -- SE(3) along Y
+    transY = matrix{{(1-ty^2)/(1+ty^2), 0, (2*ty)/(1+ty^2), 0}, 
+                    {0, 1, 0, ay},
+                    {(-2*ty)/(1+ty^2), 0, (1-ty^2)/(1+ty^2), 0}, 
+                    {0, 0, 0, 1}};
+    
+    -- SE(3) along Z
+    transZ = matrix{{(1-tz^2)/(1+tz^2), (-2*tz)/(1+tz^2), 0, 0}, 
+                    {(2*tz)/(1+tz^2), (1-tz^2)/(1+tz^2), 0, 0},
+                    {0, 0, 1, az}, 
+                    {0, 0, 0, 1}};
+                
+    result = transX * transY * transZ;
+    return result;
+);
 
-    -- Define the DH parameters for Kuka KR-15/2
-    --dof := 6;
-    --alpha = {90.0, 0.0, 90.0, -90.0, 90.0, 0.0};
-    --r = {0.3, 0.65, 0.155, 0.0, 0.0, 0.0};
-    --d = {0.675, 0.0, 0.0, 0.0, 0.0, 0.140};
-    --theta = {0.0, -90.0, 0.0, 0.0, 0.0, 0.0};
-    --dhParams := {alpha, r, d, theta};
+testPlanar = () -> (
+    -- Define DH parameters randomly
+    dof := 2;
+    alpha = {0.0, 0.0};
+    r = {1.0, 1,0};
+    d = {0.0, 0.0};
+    theta = {pi/4, pi/4};
+
+    dhParams := {alpha, r, d, theta};
 
     -- Compute the forward kinematics
     result = forwardKinematics(dhParams#0, dhParams#1, dhParams#2, dhParams#3);
 
-    -- Print the position and orientation
-    --<< "DH parameters: " << dhParams << endl << endl;
-    --<< "Result matrix: " << result << endl << endl;
+    -- Print the result
+    << "Result matrix: " << result << endl << endl;
+)
+
+main = () -> (
+    --testPlanar();
     
     -- Construct inverse kinematics equations
-    myEquations = constructEquations(result, dhParams#0, dhParams#1, dhParams#2);
-    << "# of Equations: " << #myEquations << endl;
-    sol = solveSystem myEquations;
-    << "Solution: " << sol << endl;
+    --myEquations = constructEquations(result, dhParams#0, dhParams#1, dhParams#2);
+    --<< "# of Equations: " << #myEquations << endl;
+    --sol = solveSystem myEquations;
+    --<< "Solution: " << sol << endl;
 );
 
 main()
