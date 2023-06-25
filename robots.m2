@@ -57,7 +57,7 @@ constructEquations = (A, alpha, r, d) -> (
         );
     );
     
-    for i from 0 to #ctheta-1 do(
+    for i from 0 to #alpha-1 do(
         myEquations = append(myEquations, (ctheta#i)^2 + (stheta#i)^2 -1);
     );
     
