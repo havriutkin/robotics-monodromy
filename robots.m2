@@ -57,9 +57,9 @@ constructEquations = (A, alpha, r, d) -> (
         );
     );
     
-    for i from 0 to #alpha-1 do(
-        myEquations = append(myEquations, (ctheta#i)^2 + (stheta#i)^2 -1);
-    );
+    --for i from 0 to #alpha-1 do(
+    --    myEquations = append(myEquations, (ctheta#i)^2 + (stheta#i)^2 -1);
+    --);
     
     return myEquations;
 );
@@ -112,29 +112,92 @@ constructRationalParametriseSE = () -> (
     return result;
 );
 
+-- Extracts thetax
+extractXRotation = (A) -> ( 
+    B:=matrix{{0,0,0,0}, {0,1,0,0}, {0,0,1,0}, {0,0,0,0}};
+    y:=vector{0_RR,1_RR,0_RR,0_RR};
+    Projx:=(B*(A*(y)));
+    cx:= (Projx_0*y_0)+(Projx_1*y_1)+(Projx_2*y_2)+(Projx_3*y_3);
+    thetaX = acos(cx);
+    return thetaX;
+);
+
+-- Extracts thetay
+extractYRotation = (A) -> ( 
+    B:=matrix{{1,0,0,0}, {0,0,0,0}, {0,0,1,0}, {0,0,0,0}};
+    z:=vector{0_RR,0_RR,1_RR,0_RR};
+    Projy:=(B*(A*(z)));
+    cy:= (Projy_0*z_0)+(Projy_1*z_1)+(Projy_2*z_2)+(Projy_3*z_3);
+    thetaY = acos(cy);
+    return thetaY;
+);
+
+-- Extracts thetaz
+extractZRotation = (A) -> ( 
+    B:=matrix{{1,0,0,0}, {0,1,0,0}, {0,0,0,0}, {0,0,0,0}};
+    x:=vector{1_RR,0_RR,0_RR,0_RR};
+    Projz:=(B*(A*(x)));
+    cz:= (Projz_0*x_0)+(Projz_1*x_1)+(Projz_2*x_2)+(Projz_3*x_3);
+    thetaZ = acos(cz);
+    return thetaZ;
+);
+
+-- Extracts ax, ay, az
+extractTranslation = (A) -> ( 
+    v:=vector{0,0,0,1};
+    S:=A*v;
+    T:=vector{S_0, S_1, S_2};
+   
+    cx:=cos(extractXRotation(A));
+    cy:=cos(extractYRotation(A));
+    cz:=cos(extractZRotation(A));
+    sx:=sin(extractXRotation(A));
+    sy:=sin(extractYRotation(A));
+    sz:=sin(extractZRotation(A));
+    
+    M:=matrix{{1, 0, sy}, {0, cy, -cy*sy}, {0, sx, cx*cy}};
+    
+    C:=solve(M, T);
+    
+    return entries C;
+);
+
+constructProblemSeed = (alpha, r, d, theta) -> (
+    forwardSE := forwardKinematics(alpha, r, d, theta);
+    thetaX := extractXRotation(forwardSE);
+    thetaY := extractYRotation(forwardSE);
+    thetaZ := extractZRotation(forwardSE);
+    trans := extractTranslation(forwardSE);
+    
+    problemSeed := point{{trans#0, trans#1, trans#2, cos(thetaX), cos(thetaY), cos(thetaZ),
+        sin(thetaX), sin(thetaY), sin(thetaZ)}};
+    
+    return problemSeed;
+);
+
 -- Creates seed for monodromy solver, returns list {seedProblem, seedSolution}
 createMonodromySeed = (alpha, r, d, theta) -> (
     -- Create seed problem using forward kinematics
-    seedProblem = point{forwardKinematics(alpha, r, d, theta)};
+    problemSeed = constructProblemSeed(alpha, r, d, theta);
     
     -- Create seed solution
-    seedSolution = {};
+    solutionSeed := {};
     
     -- Add cosines of thetas
     for i from 0 to #theta - 1 do(
-        seedSolution = append(seedSolution, cos(theta#i));
+        solutionSeed = append(solutionSeed, cos(theta#i));
     );
 
     -- Add sines of thetas
     for i from 0 to #theta - 1 do(
-        seedSolution = append(seedSolution, sin(theta#i));
+        solutionSeed = append(solutionSeed, sin(theta#i));
     );
 
     -- Make seed solution a point
-    seedSolution = point{seedSolution};
+    solutionSeed = point{solutionSeed};
 
-    result = {seedProblem, seedSolution};
-    return result;
+    seed := {problemSeed, solutionSeed};
+    return seed;
 );
 
 testPlanar = () -> (
@@ -157,10 +220,10 @@ testPlanar = () -> (
 main = () -> (
     -- Define dh parameters
     dof := 2;
-    alpha = {0.0, 0.0};
-    r = {1.0, 1.0};
-    d = {0.0, 0.0};
-    theta = {pi/2, -pi/2};   
+    alpha = {0.0_CC, 0.0_CC};
+    r = {1.0_CC, 1.0_CC};
+    d = {0.0_CC, 0.0_CC};
+    theta = {pi/2_CC, -pi/2_CC};   
     dhParams := {alpha, r, d, theta};
     
     -- Create parametrised end effector position
@@ -173,10 +236,10 @@ main = () -> (
     -- Create seed
     mySeed = createMonodromySeed(alpha, r, d, theta);
     
+    
     -- Use monodromySolve
     V = monodromySolve(mySystem, mySeed#0, {mySeed#1}, Verbose=>true);
 );
 
 main()
-
 
