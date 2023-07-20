@@ -56,6 +56,9 @@ forwardKinematics = (alpha, r, d, theta) -> (
 
 -- Function constructs inverse kinematics equations
 constructEquations = (A, alpha, r, d) -> (
+    -- Define local rings
+    R := CC[ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6];
+
     ctheta := {ct1, ct2, ct3, ct4, ct5, ct6};
     stheta := {st1, st2, st3, st4, st5, st6};
     
@@ -78,49 +81,6 @@ constructEquations = (A, alpha, r, d) -> (
     -- Add equations that constraint cos and sin
     for i from 0 to #alpha-1 do(
         myEquations = append(myEquations, (ctheta#i)^2 + (stheta#i)^2 -1);
-    );
-    
-    return myEquations;
-);
-
-constructParametrisedEquations = () -> (
-    -- Define symbolical DH parameters
-    ctheta := {ct1, ct2, ct3, ct4, ct5, ct6};
-    stheta := {st1, st2, st3, st4, st5, st6};
-    calpha := {C1, C2, C3, C4, C5, C6};
-    salpha := {S1, S2, S3, S4, S5, S6};
-    R := {R1, R2, R3, R4, R5, R6};
-    D := {D1, D2, D3, D4, D5, D6};
-   
-    -- Define symbolical SE(3) by cayley parametrisation 
-    B := {tx, ty, tz};
-    A := matrix{{-x^2-y^2+z^2+1, -2*y*z-2*x,      2*x*z-2*y}, 
-                {-2*y*z+2*x,     -x^2+y^2-z^2+1, -2*x*y-2*z}, 
-                { 2*x*z+2*y,     -2*x*y+2*z,      x^2-y^2-z^2+1}};
-    
-    -- Construct SE(3) with unknowns
-    T := i -> matrix{{ctheta#i, -stheta#i*calpha#i,  stheta#i*salpha#i, R#i*ctheta#i},
-                    {stheta#i,  ctheta#i*calpha#i,  -ctheta#i*salpha#i, R#i*stheta#i},
-                    {0,         salpha#i,            calpha#i,          D#i},
-                    {0,         0,                      0,               1}};
-    
-    Tf := product(#D, i -> T(i));
-    
-    
-    -- Set correspond elements of A and T to be equal
-    myEquations := {};
-    for i from 0 to 2 do(
-        for j from 0 to 2 do( 
-            myEquations = append(myEquations, (x^2+y^2+z^2+1)*Tf_(i,j) - A_(i,j));
-        );
-    );
-
-    for k from 0 to 2 do(
-            myEquations = append(myEquations, Tf_(k,3) - B#k); 
-    );
-
-    for l from 0 to 5 do(
-    myEquations = append(myEquations, (ctheta#l)^2 + (stheta#l)^2 -1);
     );
     
     return myEquations;

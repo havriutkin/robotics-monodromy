@@ -23,6 +23,9 @@
 
 -- Function returns parametrised SE(3) using c_i and s_i
 constructParametriseSE = () -> (
+    -- Define local ring
+    R := CC[ax, ay, az, cx, cy, cz, sx, sy, sz];
+
     -- SE(3) along X
     transX := matrix{{1, 0,  0,   ax},
                     {0, cx, -sx, 0},
@@ -47,6 +50,9 @@ constructParametriseSE = () -> (
 
 -- Function returns parametrised SE(3) using rational parametrisation of cos and sin
 constructRationalParametriseSE = () -> (
+    -- Define local ring
+    R := CC[ax, ay, az, tx, ty, tz];
+
     -- SE(3) along X
     transX := matrix{{1, 0, 0, ax}, 
                     {0, (1-tx^2)/(1+tx^2), (-2*tx)/(1+tx^2)}, 
@@ -72,6 +78,9 @@ constructRationalParametriseSE = () -> (
 -- Function returns parametrised SO(3) using Cayley parametrisation 
 -- multiplied by (x^2 + y^2 + z^2 + 1)
 constructCayleySO = () -> (
+    -- Define local ring
+    R := CC[x, y, z];
+
     A := matrix{{-x^2-y^2+z^2+1, -2*y*z-2*x,      2*x*z-2*y}, 
                 {-2*y*z+2*x,     -x^2+y^2-z^2+1, -2*x*y-2*z}, 
                 { 2*x*z+2*y,     -2*x*y+2*z,      x^2-y^2-z^2+1}};
@@ -82,6 +91,9 @@ constructCayleySO = () -> (
 -- Function returns list of symbolical inverse kinematics equations 
 -- (dh parameters are symbolical)
 constructParametrisedEquations = () -> (
+    -- Define local ring
+    L := QQ[tx, ty, tz, S1, S2, S3, S4, S5, S6, C1, C2, C3, C4, C5, C6, D1, D2, D3, D4, D5, D6, R1, R2, R3, R4, R5, R6][ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6];
+
     -- Define symbolical DH parameters
     ctheta := {ct1, ct2, ct3, ct4, ct5, ct6};
     stheta := {st1, st2, st3, st4, st5, st6};
