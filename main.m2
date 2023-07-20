@@ -1,4 +1,4 @@
-load('test.m2');
+load 'test.m2';
 
 -- Main function
 main = () -> (
