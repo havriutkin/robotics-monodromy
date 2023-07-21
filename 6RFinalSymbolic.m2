@@ -2,7 +2,7 @@
 needsPackage "NumericalAlgebraicGeometry";
 needsPackage "MonodromySolver";
 
- R = QQ[x, y, z, tx, ty, tz, S1, S2, S3, S4, S5, S6, C1, C2, C3, C4, C5, C6, D1, D2, D3, D4, D5, D6, R1, R2, R3, R4, R5, R6][ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6]; -- we also need to add r's. 
+ R = ZZ/7772777[x, y, z, tx, ty, tz, S1, S2, S3, S4, S5, S6, C1, C2, C3, C4, C5, C6, D1, D2, D3, D4, D5, D6, R1, R2, R3, R4, R5, R6][ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6]; -- we also need to add r's. 
 -- Replaced ci si with the angles themselves. Parametrization is linear, but still we have problems.
 -- Function to generate random DH parameters
 
@@ -49,7 +49,7 @@ constructEquations = () -> (
 
 
 end 
-
+-*
 restart
 
 load "6RFinalSymbolic.m2"
@@ -74,3 +74,4 @@ lst = apply(F,func)
 I=ideal(lst);
 dim(I)
 degree(I)
+*-
