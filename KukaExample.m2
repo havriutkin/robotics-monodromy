@@ -7,24 +7,24 @@ needsPackage "NumericalAlgebraicGeometry"
 
 S = CC[x,y,z];
 --DH parameters for Kuka
-alpha = {pi/2,0,pi/2,-pi/2,pi,0};
-d = {675,0,0,600,0,140};
+alpha = {-pi/2,0,pi/2,-pi/2,pi,0};
+d = {675,100,0,600,0,140};
 r = {300,650,155,0,0,0};
 theta = {0,-pi/2,0,0,0,0};
 -- SE(3) matrix for Kuka
 M = forwardKinematics(alpha,r,d,theta)
 -- x,y,z,tx,ty,tz for Kuka
-txAns = sub(-130,ZZ/7772777)
-tyAns = sub(140,ZZ/7772777)
-tzAns = sub(-130,ZZ/7772777)
+txAns = sub(-300,ZZ/7772777)
+tyAns = sub(-40,ZZ/7772777)
+tzAns = sub(1480,ZZ/7772777)
 -- Solve for x,y,z
 AAns = matrix{{-x^2-y^2+z^2+1, -2*y*z-2*x, 2*x*z-2*y}, {-2*y*z+2*x, -x^2+y^2-z^2+1, -2*x*y-2*z}, { 2*x*z+2*y, -2*x*y+2*z,x^2-y^2-z^2+1}};
 eqns = flatten entries((x^2+y^2+z^2+1)*submatrix'(M,{3},{3}) - AAns);
-sol = flatten entries matrix first solveSystem(eqns);
+sol = flatten entries matrix first solveSystem(eqns)
 
 xAns = sub(1,ZZ/7772777)
-yAns = sub(-1,ZZ/7772777)
-zAns = sub(-1,ZZ/7772777)
+yAns = sub(1,ZZ/7772777)
+zAns = sub(1,ZZ/7772777)
 --xAns = realPart sol_0
 --yAns = realPart sol_1
 --zAns = realPart sol_2
@@ -52,3 +52,7 @@ lst = apply(F,func)
 I=ideal(lst);
 dim(I)
 degree(I)
+
+J = ideal(lst_{0,1,2,3,4,5} | take(lst,-6))
+dim(J)
+degree J
