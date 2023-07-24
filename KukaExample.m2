@@ -41,7 +41,6 @@ Params = {xAns,yAns,zAns,txAns,tyAns,tzAns}; --x, y, z, tx, ty, tz for specific 
 F = constructEquations();
 -- Creating the ring map f
 L = ZZ/7772777[ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6];
---{ct1=>ct1, ct2=>ct2, ct3=>ct3, ct4=>ct4, ct5=>ct5, ct6=>ct6, st1=>st1, st2=>st2, st3=>st3, st4=>st4, st5=>st5, st6=>st6, S1=>DH#0#0, S2=>DH#0#1, S3=>DH#0#2, S4=>DH#0#3,S5=>DH#0#4, S6=>DH#0#5, C1=>DH#1#0, C2=>DH#1#1, C3=>DH#1#2, C4=>DH#1#3,C5=>DH#1#4, C6=>DH#1#5, D1=>DH#2#0, D2=>DH#2#1, D3=>DH#2#2, D4=>DH#2#3,D5=>DH#2#4,D6=>DH#2#5,R1=>DH#3#0, R2=>DH#3#1, R3=>DH#3#2,R4=>DH#3#3,R5=>DH#3#4,R6=>DH#3#5, x=>Params#0, y=>Params#1, z=>Params#2, tx=>Params#3, ty=>Params#4, tz=>Params#5}
 unknowns = {ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6};
 specification = flatten{unknowns,Params,flatten(DH)}
 f = map(L,R,specification);
