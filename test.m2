@@ -12,9 +12,9 @@ loadPackage "NumericalAlgebraicGeometry";
 loadPackage "MonodromySolver";
 
 -- Load others files
-load 'kinematics.m2';
-load 'parametrisation.m2';
-load 'monodromy.m2';
+load "kinematics.m2";
+load "parametrisation.m2";
+load "monodromy.m2";
 
 testMonodromy = () -> (
     DH := generateRandomDhParameters(6);

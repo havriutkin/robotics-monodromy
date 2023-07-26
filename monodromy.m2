@@ -5,7 +5,7 @@
 
 *-
 
-load 'parametrisation.m2';
+load "parametrisation.m2";
 
 -- Function takes dh parameters and returns {problem, solution} seed pair
 findSeed = (alpha, r, d, theta) -> (
