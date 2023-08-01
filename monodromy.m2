@@ -69,6 +69,7 @@ filterSolutions = (solutions, equations) -> (
     result = [];
 
     for i from 0 to length(solutions) do(
+        flag := 1;                              -- If flag == 1 then solution is valid
         solution = coordinates(solutions#i);    -- Transofrm point to array
         solDict = {ct1 => solution#0,           -- Create dictionary
                     ct2 => solution#1, 
@@ -82,7 +83,6 @@ filterSolutions = (solutions, equations) -> (
                     st4 => solution#9, 
                     st5 => solution#10, 
                     st6 => solution#11,}
-        flag := 1;                              -- If flag == 1 then solution is valid
 
         -- Substitute solution to each equation
         for j from 0 to length(equations) do(
