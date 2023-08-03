@@ -2,7 +2,7 @@ load "test.m2";
 
 -- Main function
 main = () -> (
-    testMonodromy();
+    generateMonodromyGroup();
 )
 
 -- Call main function
