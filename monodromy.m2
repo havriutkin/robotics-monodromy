@@ -62,36 +62,8 @@ findBadRows = (A, eps) -> (
    return {};
 );
 
--- Function takes list of equations and list of points that represent solutions
---  returns sublist of solutions, that contains actual solutions to given equations
-filterSolutions = (solutions, equations) -> (
-    R := CC[ct1, ct2, ct3, ct4, ct5, ct6, st1, st2, st3, st4, st5, st6];    -- Declare local ring
-    result = [];
 
-    for i from 0 to length(solutions) do(
-        flag := 1;                              -- If flag == 1 then solution is valid
-        solution = coordinates(solutions#i);    -- Transofrm point to array
-        solDict = {ct1 => solution#0,           -- Create dictionary
-                    ct2 => solution#1, 
-                    ct3 => solution#2, 
-                    ct4 => solution#3, 
-                    ct5 => solution#4, 
-                    ct6 => solution#5, 
-                    st1 => solution#6, 
-                    st2 => solution#7, 
-                    st3 => solution#8, 
-                    st4 => solution#9, 
-                    st5 => solution#10, 
-                    st6 => solution#11,}
-
-        -- Substitute solution to each equation
-        for j from 0 to length(equations) do(
-            if sub(equations#j, solDict) != 0 then flag := 0;
-        );
-
-        -- Add solution to result
-        if flag == 1 then result = append(result, solution);
-    );
-
-    return result;
+-- Function used to filter solution while running monodromySolve
+filterFunction = (P, S) -> (  
+    return (norm evaluate(Sys, point P, point S) > 1.) 
 );
