@@ -41,7 +41,7 @@ generateMonodromyGroup = () -> (
     Seed = findSeed(DH#0, DH#1, DH#2, DH#3);
 
     -- Find rows to elimenate in order to make system squared
-    findBadRows(sub(jacobian Sys, matrix Seed#1), 0.000000000001)
+    findBadRows(sub(jacobian Sys, matrix Seed#1), 50);
     G = G_{5,7,8,9,10,11}|take (G,-6);  -- TODO: Automate this part
     SquareSys = polySystem(G);
 
