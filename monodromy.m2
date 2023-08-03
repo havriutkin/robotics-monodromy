@@ -43,9 +43,9 @@ findSeed = (alpha, r, d, theta) -> (
 );
 
 -- Function returns list of 6 indexes of matrix A, s.t. A is 
---  non singular without those 6 rows. eps - presicion 
---  (if sigma_n > eps -> non singular -> good rows)
-findBadRows = (A, eps) -> (
+--  non singular without those 6 rows. condNum - presicion 
+--  (if sigma_0 / sigma_n > condNum -> non singular -> good rows)
+findBadRows = (A, condNum) -> (
     -- 6 choose 12 subsets
     indexLst = subsets({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}, 6);
     
@@ -55,7 +55,7 @@ findBadRows = (A, eps) -> (
         subMat = submatrix'(A, indToDelete, );  -- Delete rows
         decomposition = SVD(subMat);            -- Find SVD
         sigmas = decomposition#0;               -- Sigmas column
-        if sigmas#-1 > eps then return indToDelete;  -- If non singular then return result
+        if first sigmas / last sigmas < condNum then return indToDelete;  -- If non singular then return result
     );
     
    -- Return empty list if matrix is singular in any case
