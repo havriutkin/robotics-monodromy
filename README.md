@@ -1,4 +1,4 @@
-# Using Monodromy to generate Galois group in 6-R robotic's arm 
+# Using Monodromy to generate Galois group of 6-R robotic's arm 
 
 This repository contains the code and documentation for an ongoing research project focused on using monodromy to solve inverse kinematic problem and to generate Galois group associated with given robot.
 
